@@ -15,8 +15,9 @@ const setButton = (el, state) => (el.disabled = state);
 appendRow.addEventListener('click', (e) => {
   const rows = [...tbody.querySelectorAll('tr')];
 
-  rows.push(rows[1].cloneNode(true));
-  rows.forEach((row) => tbody.appendChild(row));
+  const newRow = rows[1].cloneNode(true);
+
+  tbody.appendChild(newRow);
 
   if ([...tbody.querySelectorAll('tr')].length === max) {
     setButton(e.target, true);
@@ -26,7 +27,9 @@ appendRow.addEventListener('click', (e) => {
 });
 
 removeRow.addEventListener('click', (e) => {
-  tbody.removeChild(tbody.lastElementChild);
+  if (tbody.hasChildNodes()) {
+    tbody.removeChild(tbody.lastElementChild);
+  }
 
   if (tbody.querySelectorAll('tr').length <= min) {
     setButton(e.target, true);
@@ -55,7 +58,9 @@ removeColumn.addEventListener('click', (e) => {
   const rows = [...tbody.querySelectorAll('tr')];
 
   rows.forEach((row) => {
-    row.removeChild(row.lastElementChild);
+    if (row.hasChildNodes()) {
+      row.removeChild(row.lastElementChild);
+    }
   });
 
   if (tbody.querySelectorAll('tr')[0].children.length <= min) {
