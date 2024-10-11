@@ -7,19 +7,22 @@ const removeRow = document.querySelector('.remove-row');
 const appendColumn = document.querySelector('.append-column');
 const removeColumn = document.querySelector('.remove-column');
 
+const rows = [...tbody.querySelectorAll('tr')];
+let rowsCurrent = rows.length;
+let columnsCurrent = rows[0].childElementCount;
+
 const max = 10;
 const min = 2;
 
 const setButton = (el, state) => (el.disabled = state);
 
 appendRow.addEventListener('click', (e) => {
-  const rows = [...tbody.querySelectorAll('tr')];
-
   const newRow = rows[1].cloneNode(true);
 
   tbody.appendChild(newRow);
+  rowsCurrent++;
 
-  if ([...tbody.querySelectorAll('tr')].length === max) {
+  if (rowsCurrent >= max) {
     setButton(e.target, true);
   } else {
     setButton(removeRow, false);
@@ -27,11 +30,13 @@ appendRow.addEventListener('click', (e) => {
 });
 
 removeRow.addEventListener('click', (e) => {
-  if (tbody.hasChildNodes()) {
+  rowsCurrent--;
+
+  if (rowsCurrent) {
     tbody.removeChild(tbody.lastElementChild);
   }
 
-  if (tbody.querySelectorAll('tr').length <= min) {
+  if (rowsCurrent <= min) {
     setButton(e.target, true);
   } else {
     setButton(appendRow, false);
@@ -39,15 +44,16 @@ removeRow.addEventListener('click', (e) => {
 });
 
 appendColumn.addEventListener('click', (e) => {
-  const rows = [...tbody.querySelectorAll('tr')];
+  columnsCurrent++;
 
   rows.forEach((row) => {
     const cell = document.createElement('td');
 
     row.appendChild(cell);
+    rowsCurrent++;
   });
 
-  if (tbody.querySelectorAll('tr')[0].children.length === max) {
+  if (columnsCurrent === max) {
     setButton(e.target, true);
   } else {
     setButton(removeColumn, false);
@@ -55,15 +61,16 @@ appendColumn.addEventListener('click', (e) => {
 });
 
 removeColumn.addEventListener('click', (e) => {
-  const rows = [...tbody.querySelectorAll('tr')];
+  columnsCurrent--;
 
   rows.forEach((row) => {
     if (row.hasChildNodes()) {
       row.removeChild(row.lastElementChild);
+      rowsCurrent--;
     }
   });
 
-  if (tbody.querySelectorAll('tr')[0].children.length <= min) {
+  if (columnsCurrent <= min) {
     setButton(e.target, true);
   } else {
     setButton(appendColumn, false);
